@@ -1,0 +1,44 @@
+# Base44 sandbox run book for VELORA.
+# Runs the app straight from the cloned source with the Vite dev server so that
+# every edit is reflected live in the preview. No prebuilt application image is
+# used anywhere in this file.
+name: velora-3d
+
+services:
+  web:
+    # Plain runtime base image + bind-mounted source: the edit loop stays live.
+    image: node:22
+    working_dir: /app
+    command:
+      - sh
+      - -ec
+      - npm install --no-audit --no-fund && exec npm run dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      # Dependencies live in a Docker volume, never in the sandbox filesystem.
+      - velora_node_modules:/app/node_modules
+    environment:
+      # Supplied by the platform; referenced (never hardcoded) so the dev server
+      # accepts the proxied preview host and origin.
+      - BASE44_PREVIEW_MODE
+      - BASE44_SANDBOX_HOST_DOMAIN
+      - BASE44_PUBLIC_HOST_SUFFIX
+      - __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+    restart: on-failure
+    init: true
+    healthcheck:
+      # Node 22 ships a global fetch: probe the real HTTP response, not a port.
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 150s
+
+volumes:
+  velora_node_modules:

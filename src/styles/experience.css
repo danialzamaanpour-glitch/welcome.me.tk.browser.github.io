@@ -1,0 +1,754 @@
+/* =========================================================================
+   The cinematic experience: pinned studio stage + chapters 01–05
+   ========================================================================= */
+
+.experience {
+  position: relative;
+  background: var(--white);
+}
+
+/* The stage is a CSS sticky element, not a pinned scroll-jack: it stays put
+   while the chapters pass over it, and scrolling always behaves normally. */
+.stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  margin-bottom: -100svh;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.stage__backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 85% at 50% 8%, #ffffff 0%, #fafafa 48%, #ededec 100%),
+    linear-gradient(180deg, #ffffff 0%, #f4f4f3 100%);
+}
+
+.stage__backdrop::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 42%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.035) 100%);
+}
+
+.stage__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* ----------------------------------------------------------------- chapters */
+
+.chapter {
+  position: relative;
+  z-index: 1;
+}
+
+.chapter--arrival {
+  min-height: 100svh;
+}
+
+.chapter--motion {
+  min-height: 220vh;
+}
+
+.chapter--details {
+  min-height: 334vh;
+}
+
+.chapter--spectrum {
+  min-height: 120vh;
+}
+
+.chapter--silhouette {
+  min-height: 150vh;
+}
+
+.experience__tail {
+  min-height: 40vh;
+}
+
+.chapter__inner {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 18px;
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 40px) var(--gutter) 96px;
+}
+
+.chapter__inner > * {
+  max-width: 46ch;
+}
+
+.chapter__inner--right {
+  align-items: flex-end;
+}
+
+.chapter__index {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.chapter__copy {
+  color: var(--body);
+}
+
+.chapter__actions {
+  margin-top: 10px;
+}
+
+.chapter__labels--mobile {
+  display: none;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* --------------------------------------------------------------- 01 arrival */
+
+.chapter__inner--arrival {
+  padding: 0;
+}
+
+.chapter__inner--arrival .hero__top {
+  position: absolute;
+  top: calc(var(--header-h) + 30px);
+  left: var(--gutter);
+  right: var(--gutter);
+  max-width: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.hero__main {
+  position: absolute;
+  left: var(--gutter);
+  bottom: 16vh;
+  max-width: min(640px, 44vw);
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+.hero__sub {
+  font-size: clamp(15px, 1.4vw, 18px);
+  color: var(--body);
+  max-width: 34ch;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.hero__meta {
+  position: absolute;
+  right: var(--gutter);
+  bottom: 16vh;
+  max-width: 260px;
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+}
+
+.meta-list {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.meta-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.meta-list dt {
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.meta-list dd {
+  font-size: 12.5px;
+  color: var(--ink);
+  text-align: right;
+}
+
+.hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: var(--mid);
+}
+
+.hero__scroll-line {
+  width: 1px;
+  height: 46px;
+  background: linear-gradient(180deg, var(--border-strong), rgba(0, 0, 0, 0));
+  position: relative;
+  overflow: hidden;
+}
+
+.hero__scroll-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 14px;
+  background: var(--charcoal);
+  animation: scrollHint 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes scrollHint {
+  0% {
+    transform: translateY(-16px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(46px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__scroll-line::after {
+    animation: none;
+    transform: translateY(14px);
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------- 02 motion */
+
+.annotations {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.annotation {
+  position: absolute;
+  right: var(--gutter);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: right;
+}
+
+.annotation__line {
+  width: clamp(48px, 8vw, 128px);
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.05));
+  transform-origin: left center;
+}
+
+.annotation__text {
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------- 03 details */
+
+.details__header {
+  min-height: 34vh;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: 40px;
+}
+
+.details__header-inner {
+  position: sticky;
+  top: calc(var(--header-h) + 24px);
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+
+.moment {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+}
+
+.moment__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(28px, 6vw, 96px);
+  width: 100%;
+}
+
+.moment__text {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+  max-width: 46ch;
+}
+
+.moment__art {
+  position: relative;
+  overflow: hidden;
+}
+
+.moment__art-inner {
+  will-change: transform;
+}
+
+.fabric-art {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.fabric-art__canvas {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+  background: var(--light);
+}
+
+.fabric-art--moment .fabric-art__canvas {
+  aspect-ratio: 4 / 3;
+  box-shadow: var(--shadow-soft);
+}
+
+.fabric-art--editorial .fabric-art__canvas {
+  aspect-ratio: 5 / 4;
+}
+
+.fabric-art__caption {
+  font-size: 11px;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+  color: var(--mid);
+  max-width: 46ch;
+}
+
+/* -------------------------------------------------------------- 04 spectrum */
+
+.spectrum__selection {
+  display: grid;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.spectrum__current {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.spectrum__name {
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+
+.spectrum__price {
+  font-size: 13px;
+  color: var(--mid);
+  font-variant-numeric: tabular-nums;
+}
+
+.swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(14px, 2.4vw, 28px);
+  margin-top: 22px;
+}
+
+.swatch-row--sm {
+  gap: 12px;
+  margin-top: 0;
+}
+
+.swatch {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.25s var(--ease-out);
+}
+
+.swatch:hover {
+  transform: translateY(-2px);
+}
+
+.swatch__disc {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  display: grid;
+  place-items: center;
+  transition: box-shadow 0.25s var(--ease-out);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.28), inset 0 -2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.swatch--lg .swatch__disc {
+  width: 64px;
+  height: 64px;
+}
+
+.swatch.is-selected .swatch__disc {
+  box-shadow: 0 0 0 2px var(--white), 0 0 0 3.5px var(--ink);
+}
+
+.swatch.is-soldout .swatch__disc {
+  opacity: 0.4;
+}
+
+.swatch__name {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--charcoal);
+}
+
+.swatch--lg .swatch__name {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.swatch__meta {
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--mid);
+}
+
+.swatch__check {
+  color: var(--white);
+  mix-blend-mode: difference;
+}
+
+/* ------------------------------------------------------------ 05 silhouette */
+
+.fit-notes {
+  display: grid;
+  gap: 0;
+  width: min(46ch, 100%);
+  margin-top: 6px;
+}
+
+.fit-notes__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.fit-notes__label {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.fit-notes__value {
+  font-size: 13.5px;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* --------------------------------------------------------------- skip / help */
+
+.experience__skip {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  padding: 0 0 clamp(40px, 8vh, 90px);
+}
+
+.experience__noscript {
+  position: relative;
+  z-index: 2;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 24px var(--gutter);
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------------- chapter rail */
+
+.chapter-rail {
+  position: fixed;
+  top: 50%;
+  right: clamp(10px, 2vw, 26px);
+  transform: translateY(-50%);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease-out);
+}
+
+.chapter-rail.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.chapter-rail__track {
+  position: relative;
+  width: 1px;
+  height: 132px;
+  background: var(--border);
+}
+
+.chapter-rail__fill {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: calc(var(--progress, 0) * 132px);
+  background: var(--charcoal);
+}
+
+.chapter-rail__list {
+  display: grid;
+  gap: 6px;
+}
+
+.chapter-rail__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 0;
+  padding: 3px 4px;
+  cursor: pointer;
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--mid);
+  transition: color 0.25s var(--ease-out);
+}
+
+.chapter-rail__item:hover,
+.chapter-rail__item.is-active {
+  color: var(--ink);
+}
+
+.chapter-rail__index {
+  font-variant-numeric: tabular-nums;
+}
+
+.chapter-rail__label {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 0.4s var(--ease-out), opacity 0.3s var(--ease-out);
+}
+
+.chapter-rail__item:hover .chapter-rail__label,
+.chapter-rail__item.is-active .chapter-rail__label {
+  max-width: 120px;
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ responsive */
+
+@media (max-width: 1100px) {
+  .chapter--motion {
+    min-height: 190vh;
+  }
+
+  .chapter__inner--arrival .hero__top,
+  .chapter__inner--arrival .hero__main,
+  .chapter__inner--arrival .hero__meta,
+  .chapter__inner--arrival .hero__scroll {
+    position: static;
+    transform: none;
+    max-width: none;
+  }
+
+  .chapter__inner--arrival {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 22px;
+    padding: calc(var(--header-h) + 40px) var(--gutter) 74px;
+  }
+
+  .chapter__inner--arrival .hero__top {
+    margin-bottom: auto;
+    justify-content: space-between;
+  }
+
+  /* Below 1100px the copy is bottom-aligned under the garment, so the product
+     table (duplicated in the purchase panel) steps out of the way. */
+  .hero__meta .meta-list {
+    display: none;
+  }
+
+  .hero__meta {
+    max-width: 340px;
+  }
+
+  .hero__scroll {
+    justify-self: center;
+    align-self: center;
+    margin-top: 6px;
+  }
+
+  .annotations--desktop {
+    display: none;
+  }
+
+  .chapter__labels--mobile {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .annotation {
+    right: 12px;
+    gap: 10px;
+  }
+
+  .annotation__line {
+    width: 40px;
+  }
+
+  .annotation__text {
+    font-size: 9.5px;
+  }
+}
+
+@media (max-width: 820px) {
+  .hero__meta {
+    max-width: none;
+  }
+
+  .chapter--motion {
+    min-height: 150vh;
+  }
+
+  .chapter--details {
+    min-height: auto;
+  }
+
+  .chapter--spectrum {
+    min-height: 110vh;
+  }
+
+  .chapter--silhouette {
+    min-height: 120vh;
+  }
+
+  .details__header {
+    min-height: 26vh;
+  }
+
+  .details__header-inner {
+    position: static;
+  }
+
+  .moment {
+    min-height: auto;
+    padding: 64px 0;
+  }
+
+  .moment__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .chapter__inner > * {
+    max-width: none;
+  }
+
+  .chapter__inner--right {
+    align-items: flex-start;
+  }
+
+  .chapter__inner {
+    padding: calc(var(--header-h) + 32px) var(--gutter) 88px;
+    justify-content: flex-end;
+    gap: 14px;
+  }
+
+  .chapter-rail {
+    display: none;
+  }
+
+  /* Phone composition: the scroll hint becomes an overlay and the two actions
+     share one row, so the copy stack stays inside the lower third and never
+     crosses the garment. */
+  .hero__scroll {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0;
+  }
+
+  .hero__actions {
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+
+  .hero__actions .btn {
+    min-height: 46px;
+    padding: 0 12px;
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+  }
+}
+
+@media (max-width: 520px) {
+  .display--hero {
+    font-size: clamp(2.3rem, 13vw, 3.4rem);
+  }
+
+  .swatch--lg .swatch__disc {
+    width: 52px;
+    height: 52px;
+  }
+
+  .fit-notes__row {
+    padding: 10px 0;
+  }
+}

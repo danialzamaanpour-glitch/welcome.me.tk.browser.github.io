@@ -1,0 +1,7 @@
+{
+  "previewPort": 3000,
+  "healthPath": "/",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d",
+  "notes": "Static React + Vite storefront. No database, backend service, or external credentials are required: catalog data lives in src/data, and cart/wishlist/demo account state is persisted in browser localStorage.",
+  "secrets": []
+}

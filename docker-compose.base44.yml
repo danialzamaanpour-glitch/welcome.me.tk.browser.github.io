@@ -1,0 +1,49 @@
+# VELORA — Base44 sandbox development environment.
+#
+# Runs the storefront straight from the cloned source on node:22 with the Vite
+# dev server (live reload), so edits in this repo appear in the preview without
+# rebuilding an image. Nothing here is used for production.
+
+services:
+  web:
+    image: node:22
+    working_dir: /app
+    # Dependencies live in a named volume (never in the bind mount), so they are
+    # installed on container start, after the mounts are in place, from the
+    # lockfile in this checkout.
+    command:
+      - sh
+      - -ec
+      - |
+        if [ -f package-lock.json ]; then
+          npm ci --no-audit --no-fund
+        else
+          npm install --no-audit --no-fund
+        fi
+        exec npm run dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - velora_node_modules:/app/node_modules
+    environment:
+      # Passed through from the sandbox (never hardcoded) — gates the dev-server
+      # host allowlist in vite.config.js.
+      - BASE44_PREVIEW_MODE
+      - BASE44_SANDBOX_HOST_DOMAIN
+      # Set by the platform; Vite appends it to the allowed dev-server hosts.
+      - VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+    restart: on-failure
+
+volumes:
+  velora_node_modules:

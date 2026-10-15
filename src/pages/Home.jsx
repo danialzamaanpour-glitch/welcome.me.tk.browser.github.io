@@ -7,18 +7,17 @@ import RelatedProducts from '../components/RelatedProducts'
 import NewsletterSection from '../components/NewsletterSection'
 import FinalSignature from '../components/FinalSignature'
 import SizeGuideModal from '../components/SizeGuideModal'
-import { FLAGSHIP_SLUG, colorById, getProductBySlug } from '../data/products'
+import { FLAGSHIP_SLUG, getProductBySlug } from '../data/products'
 import { useShop } from '../store/ShopContext'
 
 /**
- * Home: the nine-chapter experience. Chapters 01–05 are the scroll-driven 3D
- * presentation; 06–09 resolve into the shopping interface.
+ * Home: the cinematic experience. Chapters 01–05 are the scroll-scrubbed studio
+ * film of the flagship piece; 06–09 resolve into the shopping interface.
  */
 export default function Home() {
   const flagship = getProductBySlug(FLAGSHIP_SLUG)
   const { getSelection, setColor } = useShop()
   const { colorId } = getSelection(flagship)
-  const color = colorById(flagship, colorId)
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false)
   const openSizeGuide = () => setSizeGuideOpen(true)
 
@@ -26,7 +25,6 @@ export default function Home() {
     <>
       <ScrollExperience
         product={flagship}
-        colorHex={color?.hex}
         colorId={colorId}
         onSelectColor={(id) => setColor(flagship, id)}
         onOpenSizeGuide={openSizeGuide}

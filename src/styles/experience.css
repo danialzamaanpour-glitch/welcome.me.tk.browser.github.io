@@ -1,5 +1,5 @@
 /* =========================================================================
-   The cinematic experience: pinned studio stage + chapters 01–05
+   The cinematic presentation: a scroll-scrubbed film + chapters 01–05
    ========================================================================= */
 
 .experience {
@@ -7,8 +7,11 @@
   background: var(--white);
 }
 
-/* The stage is a CSS sticky element, not a pinned scroll-jack: it stays put
-   while the chapters pass over it, and scrolling always behaves normally. */
+/* ---------------------------------------------------------------- the stage */
+
+/* The stage is a CSS sticky element, not a pinned scroll-jack: it holds the
+   film in place while the chapters scroll over it, and page navigation keeps
+   behaving normally. */
 .stage {
   position: sticky;
   top: 0;
@@ -16,27 +19,50 @@
   margin-bottom: -100svh;
   z-index: 0;
   overflow: hidden;
+  /* Flat white: the film's own studio background is white too, so the frame
+     blends into the page instead of sitting in a visible media card. */
+  background: var(--white);
 }
 
-.stage__backdrop {
+/* The film is height-limited rather than stretched: it keeps its real 2088 x 992
+   aspect at every viewport in this band, so nothing is ever distorted. */
+.stage__media {
+  --stage-top-gap: calc(var(--header-h) + 20px);
+  --stage-bottom-gap: 47svh;
+  --film-ratio: 2.1048;
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 85% at 50% 8%, #ffffff 0%, #fafafa 48%, #ededec 100%),
-    linear-gradient(180deg, #ffffff 0%, #f4f4f3 100%);
+  display: grid;
+  place-items: center;
+  padding: var(--stage-top-gap) var(--gutter) var(--stage-bottom-gap);
 }
 
-.stage__backdrop::after {
-  content: '';
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 42%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.035) 100%);
+.cinema {
+  position: relative;
+  width: min(
+    100%,
+    calc((100svh - var(--stage-top-gap) - var(--stage-bottom-gap)) * var(--film-ratio))
+  );
+  aspect-ratio: 2088 / 992;
+  background: var(--white);
 }
 
-.stage__canvas {
+.cinema__video {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  /* No media chrome: the film is a scene, not a player. */
+  object-fit: cover;
+  object-position: center;
+}
+
+.cinema__status {
+  position: absolute;
+  left: 50%;
+  bottom: -28px;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 /* ----------------------------------------------------------------- chapters */
@@ -46,51 +72,78 @@
   z-index: 1;
 }
 
+/* Chapter heights are the film's own timeline: the progress each one spans is
+   what maps onto that stretch of footage (see cinematicState / useVideoScrub). */
 .chapter--arrival {
-  min-height: 100svh;
+  min-height: 115svh;
 }
 
-.chapter--motion {
-  min-height: 220vh;
+.chapter--form {
+  min-height: 180svh;
 }
 
-.chapter--details {
-  min-height: 334vh;
+.chapter--texture {
+  min-height: 150svh;
 }
 
-.chapter--spectrum {
-  min-height: 120vh;
+.chapter--construction {
+  min-height: 180svh;
 }
 
-.chapter--silhouette {
-  min-height: 150vh;
+.chapter--essential {
+  min-height: 130svh;
 }
 
 .experience__tail {
-  min-height: 40vh;
+  min-height: 30svh;
 }
 
+/* The copy always lives under the film, in the white strip the composition
+   reserves for it, so it can never cover the garment. */
+/* The copy and the editorial labels share the strip under the film: words on one
+   side, the labels on the other, both clear of the garment above. */
 .chapter__inner {
   position: sticky;
   top: 0;
   min-height: 100svh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 18px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: clamp(24px, 5vw, 72px);
   width: 100%;
   max-width: var(--max);
   margin: 0 auto;
-  padding: calc(var(--header-h) + 40px) var(--gutter) 96px;
-}
-
-.chapter__inner > * {
-  max-width: 46ch;
+  /* Reserve the page chrome twice: at the top of the page the section still sits
+     under the announcement bar and header, so the copy has to clear that offset
+     to be readable on the very first screen and stay clear of the film after. */
+  padding: calc(var(--header-h) + 40px) var(--gutter) clamp(88px, 14svh, 128px);
 }
 
 .chapter__inner--right {
-  align-items: flex-end;
+  flex-direction: row-reverse;
+}
+
+.chapter__copy-block {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  max-width: 46ch;
+}
+
+.experience .chapter__copy {
+  font-size: 15px;
+  line-height: 1.62;
+}
+
+.chapter__inner--right .chapter__copy-block {
+  justify-items: end;
+}
+
+/* The film is the hero of this page, so chapter display type is sized for the
+   strip beneath it rather than for a full-bleed backdrop. */
+.experience .display--chapter {
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
 }
 
 .chapter__index {
@@ -106,13 +159,39 @@
 }
 
 .chapter__actions {
-  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
 }
 
-.chapter__labels--mobile {
-  display: none;
-  gap: 8px;
-  margin-top: 8px;
+/* ---------------------------------------------------- editorial detail labels */
+
+.film-labels {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 4px;
+}
+
+.film-labels__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  white-space: nowrap;
+}
+
+.film-labels__rule {
+  width: 18px;
+  height: 1px;
+  background: var(--border-strong);
 }
 
 /* --------------------------------------------------------------- 01 arrival */
@@ -135,11 +214,17 @@
 .hero__main {
   position: absolute;
   left: var(--gutter);
-  bottom: 16vh;
-  max-width: min(640px, 44vw);
+  bottom: clamp(88px, 16svh, 140px);
+  max-width: min(520px, 44vw);
   display: grid;
-  gap: 18px;
+  gap: 14px;
   justify-items: start;
+}
+
+/* The film is the hero here, so the display type is sized for the strip under
+   it rather than for a full-bleed backdrop. */
+.chapter--arrival .display--hero {
+  font-size: clamp(1.8rem, 3vw, 2.9rem);
 }
 
 .hero__sub {
@@ -158,16 +243,16 @@
 .hero__meta {
   position: absolute;
   right: var(--gutter);
-  bottom: 16vh;
-  max-width: 260px;
+  bottom: clamp(88px, 16svh, 140px);
+  max-width: min(460px, 42vw);
   display: grid;
-  gap: 16px;
+  gap: 14px;
   justify-items: start;
 }
 
 .meta-list {
   display: grid;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
 }
 
@@ -244,127 +329,20 @@
   }
 }
 
-/* ---------------------------------------------------------------- 02 motion */
+/* ------------------------------------------------------------- 05 the essential */
 
-.annotations {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.annotation {
-  position: absolute;
-  right: var(--gutter);
+/* One restrained summary line: finish, price, then the swatches that drive the
+   same variant state as the purchase panel. */
+.essential__summary {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
-  text-align: right;
+  gap: 10px 18px;
+  margin-top: 2px;
 }
 
-.annotation__line {
-  width: clamp(48px, 8vw, 128px);
-  height: 1px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.05));
-  transform-origin: left center;
-}
-
-.annotation__text {
-  font-size: 10.5px;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--charcoal);
-  white-space: nowrap;
-}
-
-/* --------------------------------------------------------------- 03 details */
-
-.details__header {
-  min-height: 34vh;
-  display: flex;
-  align-items: flex-end;
-  padding-bottom: 40px;
-}
-
-.details__header-inner {
-  position: sticky;
-  top: calc(var(--header-h) + 24px);
-  display: grid;
-  gap: 14px;
-  justify-items: start;
-}
-
-.moment {
-  min-height: 100svh;
-  display: flex;
-  align-items: center;
-}
-
-.moment__inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(28px, 6vw, 96px);
-  width: 100%;
-}
-
-.moment__text {
-  display: grid;
-  gap: 16px;
-  justify-items: start;
-  max-width: 46ch;
-}
-
-.moment__art {
-  position: relative;
-  overflow: hidden;
-}
-
-.moment__art-inner {
-  will-change: transform;
-}
-
-.fabric-art {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 12px;
-  min-width: 0;
-  overflow: hidden;
-}
-
-.fabric-art__canvas {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  height: auto;
-  aspect-ratio: 16 / 11;
-  object-fit: cover;
-  background: var(--light);
-}
-
-.fabric-art--moment .fabric-art__canvas {
-  aspect-ratio: 4 / 3;
-  box-shadow: var(--shadow-soft);
-}
-
-.fabric-art--editorial .fabric-art__canvas {
-  aspect-ratio: 5 / 4;
-}
-
-.fabric-art__caption {
-  font-size: 11px;
-  line-height: 1.55;
-  letter-spacing: 0.04em;
-  color: var(--mid);
-  max-width: 46ch;
-}
-
-/* -------------------------------------------------------------- 04 spectrum */
-
-.spectrum__selection {
-  display: grid;
-  gap: 4px;
-  margin-top: 6px;
+.chapter__inner--right .essential__summary {
+  justify-content: flex-end;
 }
 
 .spectrum__current {
@@ -374,7 +352,7 @@
 }
 
 .spectrum__name {
-  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
   font-weight: 600;
   color: var(--ink);
   letter-spacing: -0.01em;
@@ -390,12 +368,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: clamp(14px, 2.4vw, 28px);
-  margin-top: 22px;
 }
 
-.swatch-row--sm {
+.swatch-row--micro {
   gap: 12px;
-  margin-top: 0;
 }
 
 .swatch {
@@ -424,70 +400,18 @@
   box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.28), inset 0 -2px 6px rgba(0, 0, 0, 0.16);
 }
 
-.swatch--lg .swatch__disc {
-  width: 64px;
-  height: 64px;
+.swatch--micro .swatch__disc {
+  width: 32px;
+  height: 32px;
 }
 
 .swatch.is-selected .swatch__disc {
   box-shadow: 0 0 0 2px var(--white), 0 0 0 3.5px var(--ink);
 }
 
-.swatch.is-soldout .swatch__disc {
-  opacity: 0.4;
-}
-
-.swatch__name {
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  color: var(--charcoal);
-}
-
-.swatch--lg .swatch__name {
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.swatch__meta {
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  color: var(--mid);
-}
-
 .swatch__check {
   color: var(--white);
   mix-blend-mode: difference;
-}
-
-/* ------------------------------------------------------------ 05 silhouette */
-
-.fit-notes {
-  display: grid;
-  gap: 0;
-  width: min(46ch, 100%);
-  margin-top: 6px;
-}
-
-.fit-notes__row {
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.fit-notes__label {
-  font-size: 11px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--mid);
-}
-
-.fit-notes__value {
-  font-size: 13.5px;
-  color: var(--ink);
-  text-align: right;
 }
 
 /* --------------------------------------------------------------- skip / help */
@@ -533,20 +457,20 @@
 .chapter-rail__track {
   position: relative;
   width: 1px;
-  height: 132px;
+  height: 148px;
   background: var(--border);
 }
 
 .chapter-rail__fill {
   position: absolute;
   inset: 0 0 auto 0;
-  height: calc(var(--progress, 0) * 132px);
+  height: calc(var(--progress, 0) * 148px);
   background: var(--charcoal);
 }
 
 .chapter-rail__list {
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .chapter-rail__item {
@@ -583,21 +507,134 @@
 
 .chapter-rail__item:hover .chapter-rail__label,
 .chapter-rail__item.is-active .chapter-rail__label {
-  max-width: 120px;
+  max-width: 150px;
   opacity: 1;
 }
 
 /* ------------------------------------------------------------------ responsive */
 
 @media (max-width: 1100px) {
-  .chapter--motion {
-    min-height: 190vh;
+  .chapter--form {
+    min-height: 160svh;
   }
 
+  .chapter--texture {
+    min-height: 140svh;
+  }
+
+  .chapter--construction {
+    min-height: 160svh;
+  }
+
+  .chapter--essential {
+    min-height: 120svh;
+  }
+
+  .experience__tail {
+    min-height: 25svh;
+  }
+
+  /* The product table lives in the purchase panel below; here the right-hand
+     column carries the opening description instead. */
+  .hero__meta .meta-list {
+    display: none;
+  }
+
+  .hero__scroll {
+    display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  /* Phones: the film takes the top of the screen and the copy sits under it. */
+  .stage__media {
+    place-items: start center;
+    --stage-top-gap: calc(var(--header-h) + 10px);
+    --stage-bottom-gap: 60svh;
+  }
+
+  /* A taller frame crops the film's empty studio margins instead of shrinking
+     the garment with them; the crop stays inside the white space the garment
+     never occupies. */
+  .cinema {
+    width: 100%;
+    aspect-ratio: 7 / 4;
+  }
+
+  .cinema__status {
+    bottom: -24px;
+  }
+
+  .experience .display--chapter {
+    font-size: clamp(1.7rem, 6.4vw, 2.2rem);
+  }
+
+  .chapter--arrival {
+    min-height: 100svh;
+  }
+
+  .chapter--form {
+    min-height: 130svh;
+  }
+
+  .chapter--texture {
+    min-height: 120svh;
+  }
+
+  .chapter--construction {
+    min-height: 130svh;
+  }
+
+  .chapter--essential {
+    min-height: 110svh;
+  }
+
+  .experience__tail {
+    min-height: 20svh;
+  }
+
+  /* The sticky purchase bar and the step indicator both live along the bottom
+     edge, so the copy clears them. */
+  .chapter__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: 14px;
+    padding: calc(var(--header-h) + 32px) var(--gutter) 132px;
+  }
+
+  .chapter__inner--arrival {
+    gap: 12px;
+  }
+
+  .chapter__inner--right {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .chapter__inner--right .chapter__copy-block,
+  .chapter__inner--right .essential__summary {
+    justify-items: start;
+    justify-content: flex-start;
+  }
+
+  .chapter__copy-block {
+    max-width: none;
+  }
+
+  /* Phones fold the labels into a wrapped row under the copy. */
+  .film-labels {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    padding-bottom: 0;
+  }
+
+  /* Arrival stack: label row, headline, supporting line, actions, then the
+     opening description under the film. */
   .chapter__inner--arrival .hero__top,
   .chapter__inner--arrival .hero__main,
-  .chapter__inner--arrival .hero__meta,
-  .chapter__inner--arrival .hero__scroll {
+  .chapter__inner--arrival .hero__meta {
     position: static;
     transform: none;
     max-width: none;
@@ -607,120 +644,12 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    gap: 22px;
-    padding: calc(var(--header-h) + 40px) var(--gutter) 74px;
+    padding: calc(var(--header-h) + 32px) var(--gutter) 132px;
   }
 
   .chapter__inner--arrival .hero__top {
     margin-bottom: auto;
     justify-content: space-between;
-  }
-
-  /* Below 1100px the copy is bottom-aligned under the garment, so the product
-     table (duplicated in the purchase panel) steps out of the way. */
-  .hero__meta .meta-list {
-    display: none;
-  }
-
-  .hero__meta {
-    max-width: 340px;
-  }
-
-  .hero__scroll {
-    justify-self: center;
-    align-self: center;
-    margin-top: 6px;
-  }
-
-  .annotations--desktop {
-    display: none;
-  }
-
-  .chapter__labels--mobile {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .annotation {
-    right: 12px;
-    gap: 10px;
-  }
-
-  .annotation__line {
-    width: 40px;
-  }
-
-  .annotation__text {
-    font-size: 9.5px;
-  }
-}
-
-@media (max-width: 820px) {
-  .hero__meta {
-    max-width: none;
-  }
-
-  .chapter--motion {
-    min-height: 150vh;
-  }
-
-  .chapter--details {
-    min-height: auto;
-  }
-
-  .chapter--spectrum {
-    min-height: 110vh;
-  }
-
-  .chapter--silhouette {
-    min-height: 120vh;
-  }
-
-  .details__header {
-    min-height: 26vh;
-  }
-
-  .details__header-inner {
-    position: static;
-  }
-
-  .moment {
-    min-height: auto;
-    padding: 64px 0;
-  }
-
-  .moment__inner {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
-  }
-
-  .chapter__inner > * {
-    max-width: none;
-  }
-
-  .chapter__inner--right {
-    align-items: flex-start;
-  }
-
-  .chapter__inner {
-    padding: calc(var(--header-h) + 32px) var(--gutter) 88px;
-    justify-content: flex-end;
-    gap: 14px;
-  }
-
-  .chapter-rail {
-    display: none;
-  }
-
-  /* Phone composition: the scroll hint becomes an overlay and the two actions
-     share one row, so the copy stack stays inside the lower third and never
-     crosses the garment. */
-  .hero__scroll {
-    position: absolute;
-    bottom: 14px;
-    left: 50%;
-    transform: translateX(-50%);
-    margin-top: 0;
   }
 
   .hero__actions {
@@ -736,19 +665,135 @@
     font-size: 11px;
     letter-spacing: 0.1em;
   }
+
+  .chapter__actions .btn {
+    min-height: 46px;
+  }
+
+  /* The vertical rail becomes a compact horizontal step indicator along the
+     bottom edge — clear of the copy above it and of the garment on the film. */
+  .chapter-rail {
+    top: auto;
+    /* Above the sticky purchase bar, which owns the very bottom edge. */
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .chapter-rail__track {
+    width: 132px;
+    height: 1px;
+  }
+
+  .chapter-rail__fill {
+    inset: 0 auto 0 0;
+    width: calc(var(--progress, 0) * 132px);
+    height: 1px;
+  }
+
+  .chapter-rail__list {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .chapter-rail__item {
+    padding: 7px 6px;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+  }
+
+  .chapter-rail__item.is-active .chapter-rail__label {
+    max-width: 140px;
+  }
 }
 
 @media (max-width: 520px) {
   .display--hero {
-    font-size: clamp(2.3rem, 13vw, 3.4rem);
+    font-size: clamp(2rem, 11vw, 2.8rem);
   }
 
-  .swatch--lg .swatch__disc {
-    width: 52px;
-    height: 52px;
+  .film-labels {
+    gap: 8px 16px;
   }
 
-  .fit-notes__row {
-    padding: 10px 0;
+  .film-labels__rule {
+    width: 12px;
   }
+}
+
+/* Short viewports (landscape phones) have height for either the film or the copy,
+   not both stacked: the film takes the left half, the copy the right. */
+@media (max-height: 560px) {
+  .stage__media {
+    place-items: center start;
+    --stage-top-gap: calc(var(--header-h) + 12px);
+    --stage-bottom-gap: 14svh;
+  }
+
+  .cinema {
+    width: min(50%, calc(72svh * var(--film-ratio)));
+    aspect-ratio: 2088 / 992;
+  }
+
+  .chapter__inner,
+  .chapter__inner--arrival {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 32px;
+    padding: 80px var(--gutter) 76px;
+  }
+
+  .chapter__inner--right {
+    flex-direction: row-reverse;
+  }
+
+  .chapter__copy-block {
+    max-width: 44ch;
+  }
+
+  .chapter-rail {
+    top: calc(var(--header-h) + 10px);
+    bottom: auto;
+    left: auto;
+    right: var(--gutter);
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------- product gallery (unchanged) */
+/* FabricArt is used by the product page's editorial macro, not by the film. */
+
+.fabric-art {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.fabric-art__canvas {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 16 / 11;
+  object-fit: cover;
+  background: var(--light);
+}
+
+.fabric-art--editorial .fabric-art__canvas {
+  aspect-ratio: 5 / 4;
+}
+
+.fabric-art__caption {
+  font-size: 11px;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+  color: var(--mid);
+  max-width: 46ch;
 }

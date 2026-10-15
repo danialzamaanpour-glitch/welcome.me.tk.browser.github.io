@@ -8,7 +8,7 @@ export default function SiteFooter() {
         <div className="footer__brand">
           <span className="wordmark wordmark--sm">Velora</span>
           <p className="footer__tagline">
-            Wear the dimension. A monochrome studio wardrobe, presented in real time.
+            Wear the dimension. A monochrome studio wardrobe, on film and in real time.
           </p>
         </div>
 
@@ -75,8 +75,8 @@ export default function SiteFooter() {
           or shipments take place on this site.
         </p>
         <p className="micro micro--muted">
-          Real-time 3D: Three.js · React Three Fiber — Scroll: GSAP ScrollTrigger — Fabric: generated
-          height fields, no photography.
+          Hero film: generated studio sequence, scrubbed by scroll — Viewer: real-time 3D (Three.js)
+          — Fabric: generated height fields, no photography.
         </p>
       </div>
     </footer>

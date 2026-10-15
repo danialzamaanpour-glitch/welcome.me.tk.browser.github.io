@@ -4,9 +4,10 @@ import { usePrefersReducedMotion } from '../../lib/motion'
 import { scrollToId } from '../../lib/scroll'
 
 /**
- * CHAPTER 01 — THE ARRIVAL
- * Entrance is choreographed on mount; the headline then drifts away from the
- * focal area as the chapter is scrolled out.
+ * CHAPTER 01 — ARRIVAL
+ * The film opens on its first frame (the garment standing in the studio, seen
+ * from the back) and the headline is choreographed on mount. The copy then
+ * drifts away from the focal area as the chapter is scrolled out.
  */
 export default function ChapterArrival({ product }) {
   const reduced = usePrefersReducedMotion()
@@ -15,20 +16,19 @@ export default function ChapterArrival({ product }) {
     (el, gsap) => {
       gsap
         .timeline({ defaults: { ease: 'power3.out' } })
-        .from(el.querySelectorAll('[data-mask-line]'), {
-          yPercent: 120,
-          duration: 1.15,
-          stagger: 0.09,
-        }, 0.15)
-        .from(el.querySelectorAll('[data-reveal]'), {
-          opacity: 0,
-          y: 18,
-          duration: 0.9,
-          stagger: 0.09,
-        }, 0.55)
+        .from(
+          el.querySelectorAll('[data-mask-line]'),
+          { yPercent: 120, duration: 1.15, stagger: 0.09 },
+          0.15,
+        )
+        .from(
+          el.querySelectorAll('[data-reveal]'),
+          { opacity: 0, y: 18, duration: 0.9, stagger: 0.09 },
+          0.55,
+        )
 
       gsap.to(el.querySelector('[data-hero-lift]'), {
-        yPercent: -14,
+        yPercent: -12,
         opacity: 0,
         ease: 'none',
         scrollTrigger: { trigger: el, start: 'top top', end: 'bottom top', scrub: true },
@@ -40,10 +40,16 @@ export default function ChapterArrival({ product }) {
   const color = product.colors[0]
 
   return (
-    <section className="chapter chapter--arrival" id="chapter-01" data-chapter="01" aria-labelledby="chapter-01-title">
+    <section
+      className="chapter chapter--arrival"
+      id="chapter-01"
+      data-chapter="01"
+      ref={ref}
+      aria-labelledby="chapter-01-title"
+    >
       <div className="chapter__inner chapter__inner--arrival">
         <div className="hero__top" data-reveal>
-          <span className="micro">New collection / 01</span>
+          <span className="micro">01 / Arrival</span>
           <span className="micro micro--muted">The essential oversized hoodie</span>
         </div>
 
@@ -65,15 +71,19 @@ export default function ChapterArrival({ product }) {
           </p>
           <div className="hero__actions" data-reveal>
             <button type="button" className="btn btn--primary" onClick={() => scrollToId('product')}>
-              Explore the piece
+              Explore the hoodie
             </button>
             <Link className="btn btn--ghost" to={`/product/${product.slug}`}>
-              Skip the intro
+              Go to the product page
             </Link>
           </div>
         </div>
 
         <aside className="hero__meta" data-reveal>
+          <p className="chapter__copy">
+            Meet the essential oversized hoodie: a refined everyday silhouette presented through a
+            new perspective.
+          </p>
           <dl className="meta-list">
             <div>
               <dt>Piece</dt>
@@ -89,12 +99,12 @@ export default function ChapterArrival({ product }) {
             </div>
           </dl>
           <p className="micro micro--quiet">
-            Real-time 3D · fabric surface generated at runtime
+            Studio film · your scroll moves the frame
           </p>
         </aside>
 
         <div className="hero__scroll" data-reveal>
-          <span className="micro">Scroll to explore</span>
+          <span className="micro">Scroll to move the film</span>
           <span className="hero__scroll-line" aria-hidden="true" />
         </div>
       </div>

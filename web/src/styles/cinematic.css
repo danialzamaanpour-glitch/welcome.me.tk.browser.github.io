@@ -1,0 +1,319 @@
+/* ==========================================================================
+   Scene 2 — Scroll-scrubbed cinematic sequence
+   ========================================================================== */
+
+.cinematic-scroll {
+  position: relative;
+  z-index: 2;
+  height: 340vh;
+  background: #08090b;
+  box-shadow: 0 -40px 90px -40px rgba(0, 0, 0, 0.9);
+}
+
+.cinematic-scroll::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 44px;
+  z-index: 3;
+  border-radius: 34px 34px 0 0;
+  background: var(--bg-deep);
+  pointer-events: none;
+}
+
+.cinematic {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: clip;
+  background: #08090b;
+  isolation: isolate;
+}
+
+.cinematic__backdrop {
+  position: absolute;
+  inset: -8%;
+  z-index: -1;
+  background-image: url('/media/still-1600.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(46px) saturate(120%) brightness(0.34);
+  transform: scale(1.1);
+  opacity: 0.9;
+}
+
+.cinematic__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Cinema grade: vignette + letterbox scrims */
+.cinematic__grade {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    radial-gradient(90% 70% at 50% 48%, transparent 40%, rgba(4, 5, 7, 0.55) 100%),
+    linear-gradient(to bottom, rgba(6, 7, 9, 0.78) 0%, transparent 22%, transparent 62%, rgba(6, 7, 9, 0.92) 100%);
+}
+
+/* --------------------------------------------------------------- chrome --- */
+
+.cinematic__chrome {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: clamp(96px, 12vh, 120px) var(--gutter) 0;
+  pointer-events: none;
+}
+
+.cinematic__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-en);
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(245, 241, 232, 0.6);
+}
+
+.cinematic__label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px rgba(197, 165, 116, 0.16);
+}
+
+.cinematic__frame-count {
+  font-family: var(--font-en);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: rgba(245, 241, 232, 0.45);
+  direction: ltr;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------- captions --- */
+
+.cinematic__captions {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: var(--gutter);
+  inset-inline-end: calc(var(--gutter) + 48px);
+  bottom: clamp(48px, 11vh, 110px);
+  pointer-events: none;
+}
+
+.caption {
+  position: absolute;
+  inset-inline-start: 0;
+  bottom: 0;
+  max-width: 620px;
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition: opacity 0.7s var(--ease), transform 0.9s var(--ease);
+}
+
+.caption.is-active {
+  opacity: 1;
+  transform: none;
+}
+
+.caption__index {
+  display: block;
+  margin-bottom: 14px;
+  font-family: var(--font-en);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+
+.caption__title {
+  font-size: clamp(1.35rem, 1rem + 1.7vw, 2.35rem);
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--ink);
+  text-shadow: 0 12px 40px rgba(0, 0, 0, 0.75);
+}
+
+.caption__text {
+  margin-top: 12px;
+  max-width: 46ch;
+  font-size: 0.94rem;
+  font-weight: 300;
+  color: rgba(245, 241, 232, 0.68);
+  text-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+}
+
+/* ------------------------------------------------------------ progress --- */
+
+.cinematic__rail {
+  position: absolute;
+  z-index: 2;
+  inset-inline-end: var(--gutter);
+  top: 50%;
+  translate: 0 -50%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 210px;
+}
+
+.cinematic__rail-track {
+  position: relative;
+  width: 2px;
+  height: 100%;
+  border-radius: 2px;
+  background: rgba(245, 241, 232, 0.14);
+  overflow: hidden;
+}
+
+.cinematic__rail-fill {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: calc(var(--p, 0) * 100%);
+  background: linear-gradient(to bottom, var(--accent), rgba(197, 165, 116, 0.3));
+  border-radius: 2px;
+}
+
+.cinematic__rail-label {
+  font-family: var(--font-en);
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  color: rgba(245, 241, 232, 0.45);
+  writing-mode: vertical-rl;
+  direction: ltr;
+}
+
+/* -------------------------------------------------------------- loader --- */
+
+.cinematic__loader {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  gap: 0;
+  background: radial-gradient(60% 50% at 50% 50%, rgba(20, 23, 28, 0.9), rgba(8, 9, 11, 0.98));
+  transition: opacity 0.8s var(--ease), visibility 0.8s;
+}
+
+.cinematic__loader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.cinematic__loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: min(280px, 70vw);
+  text-align: center;
+}
+
+.cinematic__loader-title {
+  font-size: 0.86rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+
+.cinematic__loader-bar {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: rgba(245, 241, 232, 0.16);
+  overflow: hidden;
+}
+
+.cinematic__loader-bar span {
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.35s var(--ease-soft);
+}
+
+.cinematic__loader-pct {
+  font-family: var(--font-en);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: var(--ink-faint);
+  direction: ltr;
+}
+
+/* ------------------------------------------------------ static fallback --- */
+
+.cinematic--static {
+  position: relative;
+  height: auto;
+  padding-block: clamp(80px, 12vh, 140px);
+  background: #08090b;
+}
+
+.cinematic--static .cinematic__static-media {
+  position: relative;
+  width: min(100% - var(--gutter) * 2, 1100px);
+  margin-inline: auto;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 50px 100px -50px #000;
+}
+
+.cinematic--static img {
+  width: 100%;
+}
+
+.cinematic--static .cinematic__static-copy {
+  width: min(100% - var(--gutter) * 2, 720px);
+  margin: clamp(32px, 5vw, 56px) auto 0;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .cinematic-scroll {
+    height: 280vh;
+  }
+
+  .cinematic__chrome {
+    padding-top: 92px;
+  }
+
+  .cinematic__captions {
+    inset-inline-end: var(--gutter);
+    bottom: clamp(40px, 9vh, 80px);
+  }
+
+  .cinematic__rail {
+    display: none;
+  }
+
+  .caption__text {
+    font-size: 0.86rem;
+    line-height: 1.9;
+  }
+}
+
+@media (max-height: 560px) {
+  .cinematic__captions {
+    bottom: 28px;
+  }
+  .caption__text {
+    display: none;
+  }
+}

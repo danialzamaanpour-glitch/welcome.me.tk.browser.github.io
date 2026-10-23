@@ -1,0 +1,15 @@
+@import './styles/tokens.css';
+@import './styles/header.css';
+@import './styles/hero.css';
+@import './styles/cinematic.css';
+@import './styles/sections.css';
+@import './styles/order.css';
+
+/* anchor offset for the fixed header */
+#services,
+#products,
+#about,
+#order,
+#home {
+  scroll-margin-top: 96px;
+}

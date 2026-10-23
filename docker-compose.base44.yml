@@ -1,0 +1,107 @@
+name: danial-chap
+
+services:
+  # ---------------------------------------------------------------- postgres ---
+  db:
+    image: postgres:16
+    restart: on-failure
+    environment:
+      POSTGRES_USER: danial
+      POSTGRES_PASSWORD: danial_dev_password
+      POSTGRES_DB: danial_chap
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U danial -d danial_chap']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
+  # ------------------------------------------------------ one-shot migration ---
+  migrate:
+    image: node:22
+    working_dir: /app
+    volumes:
+      - ./api:/app
+    environment:
+      DATABASE_URL: postgres://danial:danial_dev_password@db:5432/danial_chap
+    command: sh -ec "npm ci --no-audit --no-fund && node scripts/migrate.mjs"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: 'no'
+
+  # --------------------------------------------------------------------- api ---
+  api:
+    image: node:22
+    working_dir: /app
+    restart: on-failure
+    volumes:
+      - ./api:/app
+    environment:
+      PORT: '8080'
+      NODE_ENV: development
+      DATABASE_URL: postgres://danial:danial_dev_password@db:5432/danial_chap
+      BASE44_PREVIEW_MODE:
+    command: sh -ec "npm ci --no-audit --no-fund && exec node --watch server.js"
+    ports:
+      - '8000:8080'
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:8080/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 4s
+      retries: 6
+      start_period: 30s
+    labels:
+      base44.project: 'Danial Chap API'
+      base44.kind: api
+      base44.port: '8000'
+      base44.docs: '/api/health'
+
+  # --------------------------------------------------------------------- web ---
+  web:
+    image: node:22
+    working_dir: /app
+    restart: on-failure
+    volumes:
+      - ./web:/app
+    environment:
+      - BASE44_PREVIEW_MODE
+      - BASE44_SANDBOX_HOST_DOMAIN
+      - __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+      - API_PROXY_TARGET=http://api:8080
+    command: sh -ec "npm ci --no-audit --no-fund && exec npm run dev -- --host 0.0.0.0 --port 5173"
+    ports:
+      - '3000:5173'
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:5173/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+      start_period: 60s
+    labels:
+      base44.project: 'Danial Chap'
+      base44.kind: web
+      base44.port: '3000'
+
+volumes:
+  pgdata:
